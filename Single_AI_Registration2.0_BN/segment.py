@@ -1,8 +1,8 @@
 '''
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2023-10-19 13:31:31
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2024-02-04 15:17:21
+LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
+LastEditTime: 2024-06-12 14:59:48
 FilePath: /xushaokang/SingleRegistration/segment.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -98,7 +98,7 @@ def extracted_retangle(source_image,target_image):
     # 找到第一张图像中有内容的纵向最高点和最低点
     non_black_rows = np.any(source_image > 50, axis=1)
     top = np.argmax(non_black_rows)-10
-    bottom = len(non_black_rows) - np.argmax(non_black_rows[::-1]) - 1+5
+    bottom = len(non_black_rows) - np.argmax(non_black_rows[::-1]) - 10
 
 
     # 找到第一张图像中有内容的横向最左点和最右点

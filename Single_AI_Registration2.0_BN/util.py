@@ -1,8 +1,8 @@
 '''
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2024-02-02 15:58:52
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2024-02-04 16:25:12
+LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
+LastEditTime: 2024-06-25 09:54:49
 FilePath: /xushaokang/Single_AI_Registration2.0/util.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -15,6 +15,21 @@ import matplotlib.pyplot as plt
 
 device = torch.device('cuda')
 
+class LinearDecayScheduler:
+    def __init__(self, optimizer, start_epoch, total_epochs, initial_lr):
+        self.optimizer = optimizer
+        self.start_epoch = start_epoch
+        self.total_epochs = total_epochs
+        self.initial_lr = initial_lr
+
+    def step(self, epoch):
+        if epoch < self.start_epoch:
+            lr = self.initial_lr
+        else:
+            decay_steps = self.total_epochs - self.start_epoch
+            lr = self.initial_lr * (1 - (epoch - self.start_epoch) / decay_steps)
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = lr
 
 def Save_train_info(epoch,num_epochs,loss,learning_rates,view):
     # Save information to a txt file

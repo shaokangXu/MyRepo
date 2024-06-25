@@ -123,17 +123,20 @@ class SimpleCNN(nn.Module):
         super(SimpleCNN, self).__init__()
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, 3, kernel_size=3, padding=1),
+            nn.Conv2d(1, 4, kernel_size=3, padding=1),
+            nn.BatchNorm2d(4),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             SpatialAttention(),
     
-            nn.Conv2d(3, 16, kernel_size=3, padding=1),
+            nn.Conv2d(4, 16, kernel_size=3, padding=1),
+            nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             CBAM(16),
 
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             CBAM(32)
@@ -150,7 +153,8 @@ class Pose_Net(nn.Module):
         super(Pose_Net, self).__init__()
         self.num_classes = num_classes
         # Feature CNN
-        self.CNN = SimpleCNN()
+        self.CNN_DRR = SimpleCNN()
+        self.CNN_X  = SimpleCNN()
         self.denseNet = DenseNet()  
         self.regress = nn.Sequential(
             nn.Conv2d(512, 256, kernel_size=1, stride=1, padding=1),
@@ -159,7 +163,17 @@ class Pose_Net(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2, padding=1)
-        self.FC = nn.Sequential(
+        self.FC_R = nn.Sequential(
+            nn.Linear(128 * 4 * 4, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256, 64),
+            nn.ReLU(inplace=True),
+            nn.Linear(64, 16),
+            nn.ReLU(inplace=True),
+            nn.Linear(16, num_classes),
+            
+        )
+        self.FC_T = nn.Sequential(
             nn.Linear(128 * 4 * 4, 256),
             nn.ReLU(inplace=True),
             nn.Linear(256, 64),
@@ -170,16 +184,28 @@ class Pose_Net(nn.Module):
             
         )
     def forward(self, DRR,X_ray):
-        DRR_feature=self.CNN(DRR) #提取DRR图像特征
-        X_feature=self.CNN(X_ray) #提取X-ray图像特征        
-        Cat_feature = torch.cat((DRR_feature, X_feature), dim=1)# 拼接
-        feature = self.denseNet(Cat_feature) #融合DRR与X-ray特征        
-        feature = self.regress(feature) #回归
+        DRR_feature=self.CNN_DRR(DRR) 
+        X_feature=self.CNN_X(X_ray) 
+        # 拼接
+        Cat_feature = torch.cat((DRR_feature, X_feature), dim=1)
+        #融合DRR与X-ray特征
+        #x = self.features(New_feature)
+        feature = self.denseNet(Cat_feature)
+        #拼接两个视图的特征       
+        feature = self.regress(feature)
         x = self.maxpool(feature)
-        x = torch.flatten(x, 1) #特征展平
-        Param = self.FC(x)   ##回归参数
-        Param=torch.tanh(Param) #归一化
-        return Param
+        x = torch.flatten(x, 1)
+        if self.num_classes==3:    
+            R = self.FC_R(x)
+            T = self.FC_T(x)
+            R=torch.tanh(R)
+            T=torch.tanh(T)
+            Param = torch.cat((R, T), dim=1)
+            return Param
+        else:
+            Param = self.FC_T(x)
+            Param=torch.tanh(Param)
+            return Param
 
 
 

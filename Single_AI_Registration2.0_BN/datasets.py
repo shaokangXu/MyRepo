@@ -1,8 +1,8 @@
 '''
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2023-09-19 16:24:28
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2024-03-04 11:40:26
+LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
+LastEditTime: 2024-06-12 15:01:07
 FilePath: /xushaokang/AI_Registration1/datasets.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -17,11 +17,11 @@ from Style_trans import Style_trans
 import os
 from util import Image_Process
 from ParamTrans import Param_Trans
-from segment import extracted
+from segment import extracted_retangle
 from ReadCenter import ReadCenter
 from Parameters import common
 opt = common()
-sys.path.append('../Single_AI_Registration2.0/DRR_modules/')
+sys.path.append('../Single_AI_Registration2.0_BN/DRR_modules/')
 import ProjectorsModule as pm
 import ReadWriteImageModule as rw
 
@@ -36,7 +36,7 @@ projector_info = {
     'DRRsize': 1024,
     'DRRspacing': 0.209,
     'DRR_pp': 0.0,
-    'focal_lenght': 1011.0
+    'focal_lenght': 1060.0
 }
 
 PixelType = itk.F
@@ -46,14 +46,14 @@ ScalarType = itk.D
 
 class CustomDataset(Dataset):
     def __init__(self, ct_txt_path, xray_per_ct, view):
-            SingleCT_path = ct_txt_path.strip()#获取单椎体路径
-            self.xray_per_ct = xray_per_ct
-            self.view=view
-            file_name = os.path.basename(os.path.dirname(SingleCT_path)) #CT名字
-            #num = file_name.split('.nii.gz')[0] #获取单椎体编号，str类型
-            TotalCT_path="../Single_Dataset/CT/"+file_name+".nii.gz" #获取整椎体路径
-            self.Single_movImage, self.Single_movImageInfo = rw.ImageReader(SingleCT_path, itk.Image[PixelType, Dimension])
-            self.Total_movImage, self.Total_movImageInfo = rw.ImageReader(TotalCT_path, itk.Image[PixelType, Dimension])
+        SingleCT_path = ct_txt_path.strip()#获取单椎体路径
+        self.xray_per_ct = xray_per_ct
+        self.view=view
+        file_name = os.path.basename(os.path.dirname(SingleCT_path)) #CT名字
+        #num = file_name.split('.nii.gz')[0] #获取单椎体编号，str类型
+        TotalCT_path="../Single_Dataset/CT/"+file_name+".nii.gz" #获取整椎体路径
+        self.Single_movImage, self.Single_movImageInfo = rw.ImageReader(SingleCT_path, itk.Image[PixelType, Dimension])
+        self.Total_movImage, self.Total_movImageInfo = rw.ImageReader(TotalCT_path, itk.Image[PixelType, Dimension])
 
     def __getitem__(self,index):    
         thresholds = random.randint(-30,0) #随机设置投影阈值
@@ -106,8 +106,8 @@ class CustomDataset(Dataset):
         segmentation(X_ray_LAT,LAT_location,2,"LAT") """
         
         #根据单椎体的位置，划分出对应DRR图像与X-ray图像中对应椎体的区域
-        X_ray=extracted(DRR_X_single,1-X_ray).squeeze(0)
-        DRR_init=extracted(DRR_init_single,1-DRR_init_total).squeeze(0)
+        X_ray=extracted_retangle(DRR_X_single,1-X_ray).squeeze(0)
+        DRR_init=extracted_retangle(DRR_init_single,1-DRR_init_total).squeeze(0)
 
         transform_parameters_delta = torch.tensor(transform_parameters_delta).view(6)
 
