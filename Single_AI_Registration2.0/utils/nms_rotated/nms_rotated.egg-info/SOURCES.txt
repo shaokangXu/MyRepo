@@ -1,0 +1,14 @@
+__init__.py
+nms_rotated_wrapper.py
+setup.py
+nms_rotated.egg-info/PKG-INFO
+nms_rotated.egg-info/SOURCES.txt
+nms_rotated.egg-info/dependency_links.txt
+nms_rotated.egg-info/not-zip-safe
+nms_rotated.egg-info/top_level.txt
+src/box_iou_rotated_utils.h
+src/nms_rotated_cpu.cpp
+src/nms_rotated_cuda.cu
+src/nms_rotated_ext.cpp
+src/poly_nms_cpu.cpp
+src/poly_nms_cuda.cu

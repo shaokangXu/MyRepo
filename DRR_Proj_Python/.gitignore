@@ -1,0 +1,15 @@
+.idea/
+[Rr]ealse/
+[Dd]ebug/
+[Bb]uild/
+image/
+__pycache__/
+.vs/
+*.pyd
+*.cpp
+*.zip
+*.lib
+*.so
+*.a
+*.o
+*.nii.gz
