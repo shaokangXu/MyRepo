@@ -11,5 +11,4 @@ __pycache__/
 *.a
 *.o
 *.nii.gz
-*.png
 *.pth
