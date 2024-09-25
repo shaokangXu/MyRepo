@@ -6,6 +6,7 @@ paginate: true
 headingDivider: [2,3]
 ---
 
+
 <!-- _class: cover_b fixedtitleA
 <!-- _header: "" --> 
 <!-- _footer: "" --> 
@@ -39,8 +40,24 @@ headingDivider: [2,3]
 - [Week 25：6月17日-6月21日（模型，扩散）](#week-256月17日-6月21日)
 - [Week 26：6月24日-6月28日（NipNet ）](#week-266月24日-6月28日)
 - [Week 27：7月1日-7月5日（专利 ）](#week-277月1日-7月5日)
-- [Week 28：7月8日-7月12日（专利 ）](#week-277月8日-7月12日)
+- [Week 28：7月8日-7月12日（模型 ）](#week-287月8日-7月12日)
+- [Week 29：7月15日-7月19日（模型 ）](#week-297月15日-7月19日)
+- [Week 30：7月22日-7月26日（模型 ）](#week-307月22日-7月26日)
+- [Week 31：7月29日-8月02日（专利，模型 ）](#week-317月29日-8月02日)
+- [Week 32：8月5日-8月9日（专利，模型 ）](#week-328月05日-8月09日)
+- [Week 33：8月12日-8月16日（样本处理）](#week-338月12日-8月16日)
+- [Week 34：8月19日-8月23日（检测定位-移植）](#week-348月19日-8月23日)
+- [Week 35：8月26日-8月30日（胸腰椎数据整理）](#week-358月26日-8月30日)
+- [Week 36：9月2日-9月6日](#week-369月2日-9月6日)
 
+##
+
+<!-- _class: cols2_ol_ci fglass toc_a  -->
+<!-- _footer: "" -->
+<!-- _header: "Maestro" -->
+<!-- _paginate: "" -->
+- [Week 37：9月9日-9月13日](#week-379月9日-9月14日)
+- [Week 38：9月18日-9月20日](#week-389月18日-9月20日)
 
 
 
@@ -975,8 +992,6 @@ MSE
 <!-- _class: fixedtitleA  -->
 <!-- _class: cols-2-37-->
 
-<!-- _class: cols-2-37-->
-
 ![w:400](Image/27.4.1.png)
 </div>
 
@@ -998,15 +1013,840 @@ MSE
 <!-- _footer: "" -->
 <!-- _paginate: "" -->
 
-## (一)
+## (一)3D CT Reconstruction
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+
+
+<div class =ldiv>
+
+**《End-To-End Convolutional Neural Network for 3D Reconstruction of Knee Bones From Bi-Planar X-Ray Images》Miccai2020**
+- **数据输入**：每个通道包含一个视图(横向或AP)，在一维上(分别为0,1)被复制128次
+- **网络结构**：采用3D卷积的UNet
+- **双视图输入方式:**
+![#c w:500](Image/28.1.2.png)
+</div>
+
+<div class =rdiv>
+
+![#r w:700](Image/28.1.1.png)
+
+</div>
+
+
+## (二)
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+<!-- _footer: "" -->
+https://github.com/yuan-xiaohan/Slice-mask-based-3D-Cardiac-Shape-Reconstruction
+
+<div class =ldiv>
+
+**《Slice-mask based 3D Cardiac Shape
+Reconstruction from CT volume》ACCV 2022**
+- 训练数据 ：149套
+
+![#C w:600](Image/28.2.2.png)
+</div>
+
+
+<div class =rdiv>
+
+![#C w:600](Image/28.2.1.png)
+
+
+</div>
+
+
+## (三)模型调整
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-37-->
+
+<div class =ldiv>
+
+![#c w:300](Image/28.3.1.png)
+</div>
+
+<div class =rdiv>
+
+![ w:300](Image/28.3.2.png) ![ w:300](Image/28.3.5.png)
+
+- 原先模型：多数据----单个数据
+
+(1)![ w:300](Image/28.3.3.png) (2)![ w:300](Image/28.3.4.png)
+多数据上训练到10 epoch---------单个数据上训练到29个epoch
+</div>
+
+
+## Week 29：7月15日-7月19日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## (一)模型调研
+<!-- _class: fixedtitleA  -->
+<!-- _footer: "人工智能深度学习100种网络模型https://blog.csdn.net/weixin_42878111/article/details/131017355" -->
+
+- **Inception(Google)网络**:一种具有多尺度卷积的深度卷积神经网络，用于图像识别。(**过于陈旧**)
+
+-  **EfficientNet**：一种自动调整网络深度、宽度和分辨率的神经网络模型
+
+-  **HRNet(high-resolution)**:高分辨率网络,一种用于图像识别和语义分割的神经网络模型，保持高分辨率特征图。
+
+-  **ViT (Vision Transformer)**: - 一种将图像分割成小块并将其视为序列的Transformer，用于图像识别。
+
+-  **CapsNet (Capsule Network)** - 胶囊网络：一种用于图像识别的神经网络结构，包含胶囊层。
+
+-  **DLA(Deep Layer Aggregation)** - 深层聚合网络：深层聚合结构以迭代和分层方式合并特征层次结构，使网络具有更高的准确性和更少的参数。
+
+## (二)DLA & ResNext
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+- **DLA**
+![ w:600](Image/29.2.3.png) 
+- **现有搭配版本**
+![ w:400](Image/29.2.1.png) 
+</div>
+
+<div class =rdiv>
+
+- **ResNext**
+  - **与ResNet区别**:将之前的残差结构换成了另外的一个Block结构，并且使用了**组卷积**的概念
+  ![ w:500](Image/29.2.2.png) 
+  - **现有搭配版本**：
+      ResNeXt50_32x4d、
+      **ResNeXt101_32x8d**、
+      ResNeXt101_64x4d、
+      ResNeXt152_32x4d、
+      ...
+</div>
+
+## (三)VIT (Vision Transformer)
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+
+<div class =ldiv>
+
+![ w:700](Image/29.3.1.png)
+![ w:200](Image/29.3.3.png)![ w:230](Image/29.3.4.png)
+</div>
+
+<div class =rdiv>
+
+- **《Geo-Localization With Transformer-Based 2D-3D Match Network》** IEEE ROBOTICS AND AUTOMATION LETTERS 2023
+![ w:800](Image/29.3.2.png) 
+
+- **可借鉴点**：
+  1）Transformer中独有的Position Embedding; 
+  2）交叉注意力机制；
+</div>
+
+## (四)交叉注意力机制  & HRNet
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+- **Cross-Attention定义**：
+交叉注意力机制通过在两个或多个特征表示之间计算相似性分数，并使用这些分数来加权和聚合信息，从而实现特征的融合。
+
+- **用处**
+![ w:800](Image/29.4.1.png) 
+</div>
+
+<div class =rdiv>
+
+- **HRNet高分辨率卷积神经网络**
+![ w:800](Image/29.4.2.png) 
+- **优势**
+  - 从头到尾一直保持很高的分辨率，它的长宽没有下采样，一直是很高的分辨率。
+- **应用场景**
+  - **人体姿态估计**，目标检测，图像分割；（**Dense Prediction**）
+
+</div>
+
+
+## Week 30：7月22日-7月26日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## (一)模型对比
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-3-->
+
+<div class =ldiv>
+
+- **DLA**
+![ w:400](Image/30.1.2.png)
+![ w:400](Image/30.1.5.png) 
+</div>
+
+<div class =mdiv>
+
+- **ResNext**
+![ w:400](Image/30.1.1.png)
+![ w:400](Image/30.1.6.png)  
+</div>
+
+<div class =rdiv>
+
+- **先前**
+![ w:400](Image/30.1.3.png)
+![ w:400](Image/30.1.4.png) 
+</div>
+
+
+## (二)加入交叉注意力（CrossAttention）
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+
+<div class =ldiv>
+
+- **加入位置**
+![ w:500](Image/30.2.1.png) 
+
+- **显存占用**：BatchSize=4；14GB
+![ w:400](Image/30.2.2.png) 
+</div>
+
+<div class =rdiv>
+
+- **HRNet**
+![ w:400](Image/30.2.3.png) 
+![ w:400](Image/30.2.4.png) 
+</div>
+
+
+
+## (三)X2V: 3D Organ Volume Reconstruction From a Planar X-Ray Image With Neural Implicit Methods
+<!-- _class: fixedtitleA  -->
+
+<div align = center>
+
+![ w:800](Image/30.3.1.png)
+</div> 
+
+-  **修改**
+    - （1）、用于特征提取的 Vit模型删除了其原始分类头。模型的重点从图像分类转移到提供密集的特征表示。
+    - （2）、条件批量归一化 (CBN)
+
+
+## 论文
+<!-- _class: fixedtitleA  -->
+
+| 类型     | 名称      | 状态     
+|---------|--------|--------|
+| 论文  |《基于双位置图...研究与应用》| 二修 |
+
+## Week 31：7月29日-8月02日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## (一)模型对比
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+**DLA**
+![ w:400](Image/31.1.1.png)
+**DenseNet264**
+![ w:400](Image/31.1.2.png)
+**DenseNet121**
+![ w:400](Image/31.1.3.png)
+
+</div>
+
+<div class =rdiv>
+
+- 目前多数据训练的结果中，相近Loss训练所需的epoch数中，DenseNet264较DenseNet121快5-6个epoch，DLA较DenseNet264快5-6个epoch。
+
+
+</div>
+
+## (二)预训练模型调用
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+
+<div class =ldiv>
+
+![ w:400](Image/31.2.1.png)
+
+- **改变之处**
+  - （1）DenseNet开始采用官网预训练的权重文件初始化；（图像输入后采用两个卷积先转换成三通道）
+  - （2）考虑两个提取的特征大小过大均为（1024×w×h）,拼接后更大；因此融合回归部分以降维为主；
+- **局限**：占用内存略大，BatchSize=16时，**显存占用>24G**
+</div>
+
+<div class =rdiv>
+
+- **Down+FC**
+![ w:400](Image/31.2.2.png)
+  - 共三个如上图所示的部分，**2048-1024**、**1024-512**、**512-256**
+  - 每个块先用**1×1**的卷积降维，然后**3×3**的卷积在通道数不变的情况下提取一遍特征（**参考了点Bottleneck思想**），后接一个最大池化。
+- 单个CT训练结果-----------------------------先前的
+![ w:300](Image/31.2.3.png) ![ w:300](Image/31.2.4.png)
+
+</div>
+
+
+
+
+## (三)PRSCS-Net 
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+
+<div class =ldiv>
+
+
+- **《Progressive 3D/2D rigid Registration network with the guidance of Single-view Cycle Synthesis》**
+- **Medical Image Analysis（2024）**
+- **Southern Medical University**
+
+- **核心问题：** 
+  - 将2D/3D配准问题转化成3D/3D配准问题；
+  - 添加了CycleGAN用于从单视图中生成3D图像；
+  - 渐进式配准流程；
+
+
+</div>
+
+
+<div class =rdiv>
+
+![ w:800](Image/31.3.1.png)
+</div>
+
+
+## 专利
+<!-- _class: fixedtitleA  -->
+
+| 类型     | 名称      | 状态     
+|---------|--------|--------|
+| 专利  |一种基于transformer的2D/3D脊柱配准方法| 初稿 |
+
+
+## Week 32：8月05日-8月09日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## (一)模型对比
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-3-->
+
+<div class =ldiv>
+
+**1、现阶段多数据训练Loss对比（周一）**
+
+- A、初始模型 
+( Backbone = DenseNet121)
+
+![ w:300](Image/32.1.1.png)
+![ w:300](Image/32.1.2.png)
+
+</div>
+
+<div class =mdiv>
+
+- B、2.0模型 
+(Backbone = DLA)
+
+![ w:300](Image/32.1.3.png)
+![ w:300](Image/32.1.4.png)
+
+</div>
+
+<div class =rdiv>
+
+- B、现模型
+（预训练DenseNet）
+
+![ w:300](Image/32.1.5.png)
+
+
+</div>
+
+
+## 周五
+<!-- _class: fixedtitleA  -->
+
+![ w:700](Image/32.1.6.png)
+
+
+## (二)
+<!-- _class: fixedtitleA  -->
+
+- **Automatic 2D/3D spine registration based on two-step transformer with semantic attention and adaptive multi-dimensional loss function**《Biomedical Signal Processing and Control》2024
+
+<div align=center>
+
+![ w:700](Image/32.2.1.png)
+</div>
+
+
+## (三)CT 生成
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+- **DP-GAN+B: A lightweight generative adversarial network based on depthwise separable convolutions for generating CT volumes**
+- 《Computers in Biology and Medicine》2024
+  - 采用深度可分离卷积来实现轻量级网络。
+  - 提出融合损失和矢量损失来增强生成的CT图像的保真度
+  ![ w:400](Image/32.3.2.png)
+
+![ w:500](Image/32.3.1.png)
+
+
+## Patient-specific reconstruction of volumetric computed tomography images from a single projection view via deep learning
+<!-- _class: fixedtitleA  -->
+<div align=center>
+
+![ w:700](Image/32.4.1.png)
+
+</div>
+
+## 专利
+<!-- _class: fixedtitleA  -->
+
+| 类型     | 名称      | 状态     
+|---------|--------|--------|
+| 专利  |一种基于transformer的2D/3D脊柱配准方法| 沟通过（补充相关解释） |
+
+
+## Week 33：8月12日-8月16日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+
+## （一）旧问题重现
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+- **问题**：测试时加入model.eval()后效果与训练相反；
+- **检查**：定义模型时两个分支中用了同一个实例化的结构
+![ w:500](Image/33.1.1.png)
+</div>
+
+<div class =rdiv>
+
+- **修改**： 将预训练模型的实例化过程放到各分支里面
+![ w:500](Image/33.1.2.png)
+
+- **小Trick**：可以先用前者的流程训练网络，后续通过后者的流程微调BN。
+</div>
+
+## （二）现阶段训练结果
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+![ w:500](Image/33.2.1.png)
+![ w:500](Image/33.2.2.png)
+</div>
+
+<div class =rdiv>
+
+- **Epoch:56**
+
+| Rx | Ry | Rz | Tx| Ty| Tz    
+|-----|----|-----|------|------|------|
+|  0.77°| 0.53 | 0.47 |1.1mm |-- |1.1mm |
+
+## （三）“异常”样本
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+- **问题**：训练过程中偶尔会出现一些损失异常偏高的值（离当前平均损失差距较大）；
+![ w:400](Image/33.3.1.png)
+- **原因**：该类样本投影后，通过单椎体划分，划分出来的图像无内容，或者划分内容过多。
+</div>
+
+<div class =rdiv>
+
+![ w:200](Image/33.3.2.png) ![ w:200](Image/33.3.3.png)
+- 能看到的图像的情况下
+![ w:500](Image/33.3.4.png)
+- 看不到的图像的情况下
+![ w:500](Image/33.3.5.png)
+</div>
+
+## （四）“异常”样本处理
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+- **添加一个图像判断**：图像划分之后，判断图像区域是否合适。如果图像信息过少，则更新参数重新生成图像
+![ w:400](Image/33.4.1.png)
+
+- **小问题**：出现个别样本，一直无法生成合适图像，导致训练过程一直循环无法继续；
+
+- **处理**：训练集样本整体检查，排除样本中基本无法生成合适图像的情况。
+</div>
+
+<div class =rdiv>
+
+![ w:400](Image/33.4.2.png)
+![ w:180](Image/33.4.3.png)-->![ w:180](Image/33.4.4.png)
+![ w:180](Image/33.4.6.png)-->![ w:180](Image/33.4.5.png)
+</div>
+
+## 专利
 <!-- _class: fixedtitleA  -->
 
 
-## (一)
+| 类型     | 名称      | 状态     
+|---------|--------|--------|
+| 专利  |脊柱配准方法、装置、设备、存储介质及程序产品| 审核完成（已递交） |
+
+
+## Week 34：8月19日-8月23日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## （一）
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+| CT | Rx | Ry | Rz | Tx| Ty| Tz    
+| ----- |-----|----|-----|------|------|------|
+| CT |  0.57°| 0.40° | 0.37° |1.07mm |-- |1.103mm |
+
+</div>
+
+## （二）X-ray Detect
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+**X-ray检测框**
+- 目前整体效果在DRR以及X-ray中均能很好的检测出来；
+- 仅有上下椎体可能会因为显示不完整无法被检测，不过影响不大；
+</div>
+
+<div class =rdiv>
+
+![ w:250](Image/34.2.1.png) ![ w:250](Image/34.2.4.png)
+![ w:250](Image/34.2.3.png) ![ w:250](Image/34.2.2.png)
+</div>
+
+
+## （三）Vertebral Location
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+- 目前整体效果在DRR以及X-ray中均能很好的定位出来；
+- 但图像中必须是骨头是黑色的，背景是白色；
+
+</div>
+
+<div class =rdiv>
+
+![ w:250](Image/34.3.1.png) ![ w:250](Image/34.3.3.png)
+![ w:250](Image/34.3.2.png) ![ w:250](Image/34.3.4.png)
+</div>
+
+
+## Week 35：8月26日-8月30日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## （一）数据分析
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+- **X-ray**
+![ w:250](Image/35.1.1.png)![ w:250](Image/35.1.3.png)
+![ w:250](Image/35.1.4.png)![ w:250](Image/35.1.5.png)
+
+
+</div>
+
+<div class =rdiv>
+
+- **DRR容易出现的问题**
+![ w:250](Image/35.1.7.png)![ w:250](Image/35.1.8.png)
+
+![ w:250](Image/35.1.9.png)
+</div>
+
+
+## （二）数据处理
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+**CT数据整理**
+-  在之前整CT训练的数据上（**240**+例）中去掉了图像过小，椎体过少的CT（如下图）；现目前CT有**225**例（不含胸椎）
+ ![ w:250](Image/35.2.1.png) ![ w:250](Image/35.2.2.png)
+
+ - **合成数据过程优化**
+（1）**划分参考**：通过X-ray检测得到4个角点坐标，分别取4个X轴坐标中的最大值与最小值作为椎体左右划分界限；同理，取y轴坐标中的最大值与最小值作为上下划分界限‘
+
+</div>
+
+
+<div class =rdiv>
+
+（2）**区域扩张**：上下左右的扩张距离分别取上下界限距离的1/10以及左右界限的1/10；
+
+
+- **检测异常优化**：
+  - **问题**：X-ray仍存在一些无法正确检测的情况，则DRR图像与X-ray图像椎体不一致；
+  - **处理**：（1）X-ray图像的检测采用风格迁移之前的DRR图像检测结果，确保初始DRR与目标X-ray检测结果大概率相似。（**保证检测错也错的一样**）；
+  （2）正常合成过程中，DRR图像和X-ray图像划分椎体一直的情况下，顶端之间的差一般在（10，30）之间，若划分不一致，则相差较大；
+</div>
+
+
+## （三）胸椎部分数据整理
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+**现有数据量**
+- （1）根据统计数据表及服务器的数据，除去**仅腰椎和颈椎**的数据，剩下的数据目测约150±；
+- （2）除去数据质量不太好的数据以及干扰数据，剩**80**例；
+- （3）通过X-ray检测和定位，去除无法定位的数据，剩**74**例;
+(整体胸椎的数据)
+</div>
+
+
+<div class =rdiv>
+
+ ![ w:250](Image/35.3.1.png) ![ w:250](Image/35.3.2.png)  
+
+</div>
+
+## （四）初始训练
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+![ w:350](Image/35.4.1.png)
+![ w:350](Image/35.4.2.png)
+
+- 该数据下，整体**损失收敛**速度较前面的稍慢；
+- 现在的合成数据流程**速度**较之前差别不大；
+- 加入两个模型后，训练过程中显存占用增高（Batchsize=16，显存约**32G**）
+
+
+
+## Week 36：9月2日-9月6日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## （一）特征融合
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+**1、Cross-Attention Mechanisms(交叉注意力机制)**
+
+- **模型原理**：通过在一个特征图上计算另一个特征图的Attention，使得两者之间的信息可以有效地互相传递和融合
+![ w:450](Image/36.1.2.png)
+
+
+
+
+</div>
+
+
+<div class =rdiv>
+
+**2、Bilinear Pooling（双线性池化）**
+
+- **来源**：《Bilinear CNN Models for Fine-grained Visual Recognition》2015
+
+- **模型原理**：核心思想是使用两个特征向量的外积（outer product）来捕获通道之间的二阶交互信息
+![ w:450](Image/36.1.1.png)
+
+</div>
+
+
+## （二）FULLY DIFFERENTIABLE CORRELATION-DRIVEN 2D/3D REGISTRATION FOR X-RAY TO CT IMAGE FUSION  (ISBI 2024)
 <!-- _class: fixedtitleA  -->
 
 
-## (一)
+![ w:1400](Image/36.2.1.png)
+
+## （三）调参
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-46-->
+
+<div class =ldiv>
+
+**上周五至现在的训练过程**
+![ w:400](Image/36.3.3.png)
+</div>
+
+<div class =rdiv>
+
+**初始学习率**
+- 0.0002
+![ w:800](Image/36.3.1.png)
+- 0.0004
+![ w:800](Image/36.3.2.png)
+
+
+</div>
+
+
+## 论文
 <!-- _class: fixedtitleA  -->
 
+| 类型     | 名称      | 状态     
+|---------|--------|--------|
+| 论文  |《基于双位置...脊柱导航配准方法的精度和效率研究》| 校稿完成（待发表）|
 
+
+## Week 37：9月9日-9月14日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+
+## （一）添加X-ray检测划分
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+
+<div class =ldiv>
+
+**X-ray检测结果**
+![ w:400](Image/37.1.5.png)
+
+- 检测结果目前正确率略低，暂时不方便用于椎体划分，需要人工调整；
+
+</div>
+
+<div class =rdiv>
+
+**通过手动划分增加便利性**
+![ w:250](Image/37.1.1.png)![ w:250](Image/37.1.2.png)
+![ w:500](Image/37.1.3.png)
+
+</div>
+
+
+
+
+
+## （二）现阶段测试
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+**一、按照模型本身的数据合成过程测试**
+| CT | Rx | Ry | Rz | Tx| Ty| Tz    
+| ----- |-----|----|-----|------|------|------|
+| CT |  0.8°| 0.51° | 0.63° |1.53mm |-- |1.35mm |
+
+</div>
+
+
+<div class =rdiv>
+
+**二、真实X-ray情况测试:Gao_ct.nii.gz**
+- **问题**：真实情况下在固定旋转点上的所需的参数较大，经过测试大概需要：
+
+| CT | Rx | Ry | Rz | Tx| Ty| Tz    
+| ----- |-----|----|-----|------|------|------|
+| CT |  6.3°| --° | 5.15° |20mm |-- |20mm |
+
+但目前合成数据的参数范围：
+旋转：（-5.7°，5.7°）
+平移：（-5mm，5mm）
+</div>
+
+## Week 38：9月18日-9月20日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+
+## （一）数据集整理
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+![ w:300](Image/38.1.1.png)
+- 目前按照数据大小按序整理，整理了常州CT数据中40MB至139MB中**约618例**CT，选取其中可用的腰椎数据**约382例**（去除胸椎以及包含钉子的数据）
+
+- 现总共**训练集600例**CT。
+</div>
+
+
+
+<div class =rdiv>
+
+**ctd数据**
+- 在现已整理好的CT数据的基础上整理对应的ctd数据（主要利用质心数据）；
+- 整理了对应的ctd数据**556例**，筛选过后剩**530例**
+  - 其中去除了包含L6的数据、有问题的数据以及一些内部信息不对应的数据；
+
+</div>
+
+## Week 39：9月23日-9月27日
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+
+## （一）数据流程调整
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+
+<div class =ldiv>
+
+**目的**：扩大位置空间参数捕获范围；
+**做法**：以椎体质心为旋转点进行合成图像（以更贴近实际椎体变化）；
+**部分流程解释**
+- （1）因为不确定最终投影图像上大概会有哪些椎体，从而无法知道应该用那个椎体质心数据。所以根据投影Z轴中心选择上下各两个椎体作为备选。（因为一张图像上大概率会有四个椎体）
+- （2）因为每个椎体三维质心数据在图像属于一个动态二维特征，难以学习。所以将合成的六个参数转成固定旋转点下的参数表示；
+- （3）考虑到椎体定位出现漏检以及检测不正确的情况，使得前面质心点对应的椎体不在检测结果范围以内，返回重新生成；
+
+</div>
+
+<div class =rdiv>
+
+![ w:400](Image/39.1.1.png)
+
+</div>
+
+## （二）训练
+<!-- _class: fixedtitleA  -->
+<!-- _class: cols-2-->
+<div class =ldiv>
+
+**（一）合成参数范围调整**
+- 初始变换参数
+![ w:400](Image/39.2.1.png)
+- 配准变换参数（Label）
+![ w:400](Image/39.2.2.png)
+
+
+</div>
+
+<div class =rdiv>
+
+
+</div>
