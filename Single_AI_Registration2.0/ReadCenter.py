@@ -2,7 +2,7 @@
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2023-12-05 10:05:16
 LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
-LastEditTime: 2024-09-23 17:30:55
+LastEditTime: 2024-11-04 16:59:52
 FilePath: /xushaokang/Single_AI_Registration/Center.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -94,6 +94,46 @@ def ReadCenter(ctd_path,flagZ):
             info_list.append(row['Z1'])
             return info_list,VertebralNameList """
 
+def ReadLandmarkers(ctd_path,VertebralName): 
+    with open(ctd_path, 'r') as f:
+        data = f.read()
+    split_data = data.split('\n\n')
+    if(len(split_data)<9):
+        label_data = split_data[3]
+
+    else:
+        label_data = split_data[7]
+        
+    if(VertebralName=="T12"):
+        VertebralName="TC"
+    if(VertebralName=="T11"):
+        VertebralName="TB"
+    if(VertebralName=="T10"):
+        VertebralName="TA"
+
+    # 提取数据表格
+    label_table = pd.read_csv(StringIO(label_data), sep='\t', header=1)
+    # 剔除表头中的空格
+    label_table.rename(columns=lambda x: x.strip(), inplace=True)
+    # 剔除unnamed列
+    unnamed_cols = [col for col in label_table.columns if 'Unnamed:' in col]
+    label_table = label_table.drop(unnamed_cols, axis=1)
+    filtered_df = label_table[label_table['Name'].str.contains(VertebralName)]
+
+    LandmakerDict={}
+    for index, row in filtered_df.iterrows():
+        for i in range(len(row['Name'].strip().replace(" ", "")) - 1, -1, -1):
+            if row['Name'].strip().replace(" ", "")[i] == 'L' or row['Name'].strip().replace(" ", "")[i] == 'T':
+                # 遇到'r'或者空格时，返回该索引之后的部分
+                key=row['Name'].strip()[i :]
+                #VertebralNameList.append (row['Name'].strip().replace(" ", "")[i + 1:])
+                LandmakerDict[key]=[row['X1'],row['Y1'],row['Z1']]
+    if VertebralName  in LandmakerDict:
+        del LandmakerDict[VertebralName]
+    """ for key in VertebralNameDict:
+        print(key, VertebralNameDict[key])
+    exit() """
+    return LandmakerDict
 
     
     

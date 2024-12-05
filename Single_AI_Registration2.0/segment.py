@@ -2,7 +2,7 @@
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2023-10-19 13:31:31
 LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
-LastEditTime: 2024-10-15 14:26:18
+LastEditTime: 2024-11-26 16:14:07
 FilePath: /xushaokang/SingleRegistration/segment.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 import torch
 import random
+import math
 from torchvision import transforms
 device = torch.device('cuda')
 
@@ -55,8 +56,66 @@ def segmentation(imgs,pred_poly,index,view):
     return  0.5*(Img_input+1)  
 
 
-def ExtractedByCoord(source_image,CoordList):
-    source_image=normalize(source_image).astype(np.uint8)
+
+def Add_occlusion(Image,bbox,View):
+    image=np.copy(Image)
+    # 定义矩形的中心、尺寸和旋转角度
+    center = (0,0) # 矩形中心
+    size = (0,0)   # 矩形的宽和高 (width, height)
+    angle = 0          # 矩形旋转角度（单位：度）
+    
+    for K in range(2):
+        if View == "AP": 
+            if K==0:  
+                center = (bbox[2]+random.randint(10,30),int((bbox[0]+bbox[1])/2)+random.randint(-10,10)) 
+                size = (random.randint(50,100) , (bbox[1]-bbox[0])*round(random.uniform(1/18,1/12),2) ) 
+                angle = random.randint(-50,50)
+            else:
+                center = (bbox[3]-random.randint(10,30), int((bbox[0]+bbox[1])/2)+random.randint(-10,10))
+                size = (random.randint(50,100) , (bbox[1]-bbox[0])*round(random.uniform(1/18,1/12),2) ) 
+                angle = random.randint(-50,50)
+
+        elif View == "LAT":
+            center = (min(bbox[3]+random.randint(10,20),512), int((bbox[0]+bbox[1])/2)+random.randint(-15,15))
+            size = (random.randint(150,200) , (bbox[1]-bbox[0])*round(random.uniform(1/22,1/18),2) )
+            angle = random.randint(-20,20) 
+        else:
+            print("Error: View must be AP or LAT")
+            exit()
+        # 创建旋转矩形
+        rotated_rect = ((center[0], center[1]), (size[0], size[1]), angle)
+
+        # 获取旋转矩形的四个顶点
+        box = cv2.boxPoints(rotated_rect)  # 返回浮点型顶点
+        box = np.int0(box)                # 转换为整数
+
+        # 在图像上绘制黑色矩形
+        color1=random.randint(10,30)
+        cv2.fillPoly(image, [box], color1)
+
+        """ mask = np.zeros_like(image, dtype=np.uint8)
+        cv2.fillPoly(mask, [box], 255)
+        # 生成噪声
+        noise = np.random.randint(0, 40, (512,512), dtype=np.uint8)  # 噪声范围（0到50）
+        # 在掩码范围内应用噪声
+        image = np.where(mask == 255, image + noise, image) """
+        
+        #AP位的加两个圆
+        if View == "AP": 
+            #画第一个圆
+            color2=random.randint(30,40)
+            radius=int((bbox[1]-bbox[0])*round(random.uniform(1/12,1/8),2))
+            cv2.circle(image, center, radius,color2,-1)
+            #画第二个圆
+            tangent_value = math.tan(math.radians(angle))
+            delta = random.randint(-10,10)
+            center2 = (center[0]+delta, int(center[1]+delta*tangent_value))
+            cv2.circle(image, center2,radius,color2-20,-1)
+    image = cv2.GaussianBlur(image, (5,5), 0)
+    return image
+
+def ExtractedByCoord(source_image,CoordList,occlusion,View):
+
     CoordList = [int(num) for num in CoordList] # 将列表中的所有元素转换为整数
     # 找到第一张图像中有内容的纵向最高点和最低点
     top = min(CoordList[1],CoordList[3],CoordList[5],CoordList[7])
@@ -65,12 +124,16 @@ def ExtractedByCoord(source_image,CoordList):
     # 找到第一张图像中有内容的横向最左点和最右点
     left = min(CoordList[0],CoordList[2],CoordList[4],CoordList[6])
     right =max(CoordList[0],CoordList[2],CoordList[4],CoordList[6])
+    source_image=normalize(source_image).astype(np.uint8)
+    bbox=[top,bottom,left,right]
+    """ if occlusion:
+            occlusion_image=Add_occlusion(source_image,bbox,View)  #添加遮挡"""
+
     height=bottom-top
     length=right-left
     # 将框扩大(6-10)%
-    expandRate= round(random.uniform(0.06,0.10),2)
-    ExpandHeight=int(height*expandRate)
-    ExpandLength=int(length*expandRate)
+    ExpandHeight=int(height*round(random.uniform(0.08,0.10),2))
+    ExpandLength=int(length*round(random.uniform(0.08,0.10),2))
     
     if(top-ExpandHeight<=0):
         top=0
@@ -91,25 +154,37 @@ def ExtractedByCoord(source_image,CoordList):
         right=source_image.shape[1]
     else:
         right=right+ExpandLength
-
     
-    # 创建一个与第二张图像相同尺寸的黑色图像
-    result_image = np.zeros_like(source_image)
 
-    # 仅在新图像中保留第二张图像中最高点、最低点、最左点和最右点之间的区域内容
-    result_image[top:bottom, left:right] = source_image[top:bottom, left:right]
+    if occlusion:
+        # 截取遮挡的图像
+        occlusion_image=Add_occlusion(source_image,bbox,View)  #添加遮挡
+        # 创建一个与第二张图像相同尺寸的黑色图像
+        occlusion_image_input = np.zeros_like(occlusion_image)
+        # 仅在新图像中保留第二张图像中最高点、最低点、最左点和最右点之间的区域内容
+        occlusion_image_input[top:bottom, left:right] = occlusion_image[top:bottom, left:right]
+        occlusion_image_input = Image.fromarray(occlusion_image_input.astype(np.uint8)).convert("L")
+        _transforms = [transforms.Resize(int(512)),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5), (0.5))]
 
-    # 保存新的图像
+        transform = transforms.Compose(_transforms)
+        occlusion_image_input = transform(occlusion_image_input)
+        return 0.5 * (occlusion_image_input + 1)
+    else:
+        # 创建一个与第二张图像相同尺寸的黑色图像
+        result_image = np.zeros_like(source_image)
+        # 仅在新图像中保留第二张图像中最高点、最低点、最左点和最右点之间的区域内容
+        result_image[top:bottom, left:right] = source_image[top:bottom, left:right]
+        # 截取没有遮挡的图像
+        result_image = Image.fromarray(result_image.astype(np.uint8)).convert("L")
+        _transforms = [transforms.Resize(int(512)),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5), (0.5))]
 
-    result_image = Image.fromarray(result_image.astype(np.uint8)).convert("L")
-    _transforms = [transforms.Resize(int(512)),
-                transforms.ToTensor(),
-                transforms.Normalize((0.5), (0.5))]
-
-    transform = transforms.Compose(_transforms)
-    Img_input = transform(result_image).unsqueeze(0)
-
-    return 0.5 * (Img_input + 1)
+        transform = transforms.Compose(_transforms)
+        Img_input = transform(result_image)
+        return 0.5 * (Img_input + 1)
 
 def extracted(source_image,target_image):
     source_image=normalize(source_image).astype(np.uint8)

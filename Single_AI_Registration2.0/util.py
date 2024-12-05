@@ -2,7 +2,7 @@
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2024-02-02 15:58:52
 LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
-LastEditTime: 2024-11-01 15:57:08
+LastEditTime: 2024-11-04 08:56:59
 FilePath: /xushaokang/Single_AI_Registration2.0/util.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -17,8 +17,6 @@ import random
 import torch
 from matplotlib.path import Path
 device = torch.device('cuda')
-
-
 import matplotlib.patches as patches
 
 
@@ -140,7 +138,7 @@ def Save_train_info(epoch,num_epochs,loss,learning_rates,SaveName):
         plt.xlabel('Epoch')
         plt.ylabel('Average Loss')
         plt.grid(True)
-        plt.savefig('Output/'+SaveName+view+'.png')
+        plt.savefig('Output/'+SaveName+'.png')
         plt.close()
 
 

@@ -1,8 +1,8 @@
 '''
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2023-11-17 13:20:08
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2024-01-08 15:21:52
+LastEditors: qiuyi.ye qiuyi.ye@maestrosurgical.com
+LastEditTime: 2024-12-05 10:41:55
 FilePath: /xushaokang/Single_AI_Registration/SaveResultData.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -16,7 +16,7 @@ def save_result(transform_parameters_delta,delta_Pose,i,time):
 
     #------保存配准误差数据------
     # 读取现有的Excel文件
-    file_path = 'regis_data.xlsx'
+    file_path = 'Output/regis_data.xlsx'
     existing_data = pd.read_excel(file_path)
 
     Iter_data = {"CT": str(i)}

@@ -245,6 +245,8 @@ class model_1(nn.Module):
         return Param
 ####--------------
 
+
+####----Rot model
 class FC_RotCenter(nn.Module):
     def __init__(self,num_classes=2):
         super(FC_RotCenter, self).__init__()
@@ -319,8 +321,8 @@ class RotCenterModel(nn.Module):
         x = self.bottleneck3(x)
 
         return x
-    
 
+####----Overall model
 class Pose_Net(nn.Module):
     def __init__(self,model):
         super(Pose_Net, self).__init__()
@@ -378,7 +380,7 @@ class Pose_Net(nn.Module):
         InputDRRLat=self.convDRRLat(DRR_Lat)
         InputXrayLat=self.convXrayLat(X_ray_Lat)
 
-        DRR_feature_Ap =self.CNN_DRR_Ap(InputDRRAp)       
+        DRR_feature_Ap =self.CNN_DRR_Ap(InputDRRAp)      
         X_feature_Ap =self.CNN_X_Ap(InputXrayAp)
         DRR_feature_Lat =self.CNN_DRR_Lat(InputDRRLat) 
         X_feature_Lat =self.CNN_X_Lat(InputXrayLat)
@@ -406,6 +408,9 @@ class Pose_Net(nn.Module):
 
 
  ##Style translate model   
+
+
+####----Style translate model
 class ResidualBlock(nn.Module):
     def __init__(self, in_features):
         super(ResidualBlock, self).__init__()
